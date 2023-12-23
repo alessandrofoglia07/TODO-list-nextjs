@@ -10,11 +10,13 @@ datasource db {
 
 model User {
   id       String @id @default(uuid())
+  userId   String @unique
   username String @unique
   email    String @unique
-  password String
 
   todos Todo[]
+  lists List[]
+  tags  Tag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -24,12 +26,57 @@ model Todo {
   id      String @id @default(uuid())
   title   String
   content String @db.Text
+  color   Color
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  lists List[]
+  tags  Tag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+model List {
+  id    String @id @default(uuid())
+  name  String @unique
+  color Color
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  todos Todo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String @unique
+  color Color
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  todos Todo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+enum Color {
+  RED
+  ORANGE
+  YELLOW
+  GREEN
+  BLUE
+  PURPLE
 }
