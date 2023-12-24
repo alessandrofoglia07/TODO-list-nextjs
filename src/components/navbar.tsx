@@ -1,12 +1,13 @@
 import { MdMenu } from 'react-icons/md';
 import { IoMdSearch } from 'react-icons/io';
-import { FaPlus } from 'react-icons/fa6';
 import { currentProfile } from '@/lib/currentProfile';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
-import List, { ListClassName } from './list';
-import Tag, { TagClassName } from './tag';
+import List from './list';
+import Tag from './tag';
 import { UserButton } from '@clerk/nextjs';
+import NewTagBtn from './defaultButtons/newTagBtn';
+import NewListBtn from './defaultButtons/newListBtn';
 
 const Navbar = async () => {
     const user = await currentProfile();
@@ -54,10 +55,7 @@ const Navbar = async () => {
                         {lists.map((list) => (
                             <List key={list.id} list={list} />
                         ))}
-                        <button className={ListClassName}>
-                            <FaPlus className='h-6 w-6 text-[#838383]' />
-                            <p className='text-md font-semibold text-[#686868]'>Add New List</p>
-                        </button>
+                        <NewListBtn />
                     </div>
                 </div>
                 <div id='tags' className='mt-10 w-full'>
@@ -66,7 +64,7 @@ const Navbar = async () => {
                         {tags.map((tag) => (
                             <Tag key={tag.id} tag={tag} />
                         ))}
-                        <button className={TagClassName}>+ Add Tag</button>
+                        <NewTagBtn />
                     </div>
                 </div>
                 <div className='absolute bottom-0 mb-8 w-full'>

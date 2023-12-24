@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import Navbar from '@/components/navbar';
+import ModalProvider from '@/context/modalContext';
 
 const font = Poppins({
     subsets: ['latin'],
@@ -19,8 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ClerkProvider>
             <html lang='en'>
                 <body suppressHydrationWarning className={font.className + ' bg-white'}>
-                    <Navbar />
-                    <main className='fixed right-0 w-[75vw]'>{children}</main>
+                    <ModalProvider>
+                        <Navbar />
+                        <main className='fixed right-0 w-[75vw]'>{children}</main>
+                    </ModalProvider>
                 </body>
             </html>
         </ClerkProvider>
