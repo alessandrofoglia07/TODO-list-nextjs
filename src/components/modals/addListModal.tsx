@@ -10,6 +10,7 @@ import { getRandomColor } from '@/lib/getRandomColor';
 import { colors } from '@/lib/colors';
 import axios from 'axios';
 import { MdClose } from 'react-icons/md';
+import { useRouter } from 'next/navigation';
 
 const schema = z.object({
     name: z.string().min(1, 'List name required').max(20, 'List name too long'),
@@ -19,6 +20,7 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const AddListModal = () => {
+    const router = useRouter();
     const { closeModal } = useContext(ModalContext)!;
     const [data, setData] = useState<Schema>({
         name: '',
@@ -46,7 +48,9 @@ const AddListModal = () => {
             const validate = schema.safeParse(data);
             if (!validate.success) return setError(validate.error.errors[0].message);
 
-            await axios.post('/api/list', data);
+            await axios.post('/api/lists', data);
+
+            router.refresh();
 
             closeModal();
         } catch (err) {

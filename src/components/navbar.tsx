@@ -19,12 +19,18 @@ const Navbar = async () => {
     const lists = await db.list.findMany({
         where: {
             userId: user.id
+        },
+        orderBy: {
+            createdAt: 'desc'
         }
     });
 
     const tags = await db.tag.findMany({
         where: {
             userId: user.id
+        },
+        orderBy: {
+            createdAt: 'asc'
         }
     });
 

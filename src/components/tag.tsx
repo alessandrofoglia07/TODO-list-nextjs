@@ -6,7 +6,7 @@ interface Props {
     tag: Pick<TagT, 'name' | 'color'> & Partial<TagT>;
 }
 
-export const TagClassName = 'w-fit rounded-xl bg-gray-200 px-4 py-2 font-bold text-black/80 shadow-hover';
+export const TagClassName = 'w-fit rounded-xl px-4 py-2 font-bold text-black/80 shadow-hover';
 
 const Tag = ({ tag }: Props) => {
     return (
@@ -15,7 +15,7 @@ const Tag = ({ tag }: Props) => {
                 tag: tag.name
             })}`}
             className={TagClassName}
-            style={{ backgroundColor: colors('TAG', tag.color) + ' !important' }}>
+            style={{ backgroundColor: colors('TAG', tag.color) }}>
             {tag.name}
         </Link>
     );

@@ -4,12 +4,13 @@ import { ModalContext } from '@/context/modalContext';
 import { Color } from '@prisma/client';
 import { useContext, useState, MouseEvent } from 'react';
 import { z } from 'zod';
-import SelectColor from '../selectColor';
+import SelectColor from '@/components/selectColor';
 import { FaCheck } from 'react-icons/fa';
 import { getRandomColor } from '@/lib/getRandomColor';
 import { colors } from '@/lib/colors';
 import axios from 'axios';
 import { MdClose } from 'react-icons/md';
+import { useRouter } from 'next/navigation';
 
 const schema = z.object({
     name: z.string().min(1, 'Tag name required').max(20, 'Tag name too long'),
@@ -19,6 +20,7 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const AddTagModal = () => {
+    const router = useRouter();
     const { closeModal } = useContext(ModalContext)!;
     const [data, setData] = useState<Schema>({
         name: '',
@@ -48,6 +50,8 @@ const AddTagModal = () => {
             if (!validate.success) return setError(validate.error.errors[0].message);
 
             await axios.post('/api/tags', data);
+
+            router.refresh();
 
             closeModal();
         } catch (err) {

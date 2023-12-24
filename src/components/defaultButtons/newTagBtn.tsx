@@ -11,7 +11,7 @@ const NewTagBtn = () => {
         openModal('addTag');
     };
     return (
-        <button onClick={handleClick} className={TagClassName}>
+        <button onClick={handleClick} className={TagClassName + ' bg-slate-200'}>
             + Add Tag
         </button>
     );
