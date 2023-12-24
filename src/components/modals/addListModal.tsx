@@ -54,6 +54,13 @@ const AddListModal = () => {
         }
     };
 
+    const handleColorChange = (color: Color) => {
+        setData((prev) => ({
+            ...prev,
+            color
+        }));
+    };
+
     return (
         <div id='outside-modal' onClick={handleClick} className='appear fixed inset-0 z-10 h-full w-full bg-black/40'>
             <div className='fixed left-1/2 top-1/2 flex h-fit max-h-[90vh] min-h-10 w-max min-w-10 max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl bg-white px-16 pb-20'>
@@ -79,7 +86,7 @@ const AddListModal = () => {
                 <div className='mt-4 flex items-center justify-between gap-4'>
                     <p className='text-red-700'>{error}</p>
                     <div className='flex items-center gap-4'>
-                        <SelectColor />
+                        <SelectColor scope='LIST' handleSelection={handleColorChange} />
                         <button onClick={handleConfirm} className='shadow-hover p-2'>
                             <FaCheck className='h-6 w-6' />
                         </button>

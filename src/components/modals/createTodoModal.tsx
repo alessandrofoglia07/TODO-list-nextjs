@@ -51,6 +51,13 @@ const CreateTodoModal = () => {
     // TODO
     const handleAddList = () => {};
 
+    const handleColorChange = (color: Color) => {
+        setData((prev) => ({
+            ...prev,
+            color
+        }));
+    };
+
     return (
         <div id='outside-modal' onClick={handleClick} className='appear fixed inset-0 z-10 h-full w-full bg-black/40'>
             <div
@@ -91,7 +98,7 @@ const CreateTodoModal = () => {
                         </button>
                     </div>
                     <div className='flex items-center gap-4'>
-                        <SelectColor />
+                        <SelectColor scope='TODO' handleSelection={handleColorChange} />
                         <button onClick={handleConfirm} className='shadow-hover p-2'>
                             <FaCheck className='h-6 w-6' />
                         </button>

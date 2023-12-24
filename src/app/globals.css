@@ -33,6 +33,24 @@
     }
 }
 
+@keyframes bubble-appear {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bubble-disappear {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+
 @layer utilities {
     .shadow-hover {
         @apply relative before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0 before:block before:rounded-xl before:bg-black before:opacity-0 before:transition-opacity hover:before:opacity-10;
@@ -41,5 +59,13 @@
     .appear {
         opacity: 0;
         animation: fadeIn 0.2s ease-in-out forwards;
+    }
+
+    .bubble-appear {
+        animation: bubble-appear 0.2s ease-in-out forwards;
+    }
+
+    .bubble-disappear {
+        animation: bubble-disappear 0.15s ease-in-out forwards;
     }
 }
