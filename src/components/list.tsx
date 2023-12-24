@@ -15,7 +15,7 @@ const List = ({ list }: Props) => {
                 list: list.name
             })}`}
             className={ListClassName}>
-            <div className={`mx-1 h-4 w-4 rounded-md`} style={{ backgroundColor: colors('LIST', list.color) }} />
+            <div className='mx-1 h-4 w-4 rounded-md' style={{ backgroundColor: colors('LIST', list.color) }} />
             <p className='text-md font-semibold text-[#686868]'>{list.name}</p>
         </Link>
     );

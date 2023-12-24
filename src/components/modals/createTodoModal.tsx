@@ -10,15 +10,11 @@ import { FaCheck, FaPlus } from 'react-icons/fa';
 import { ListClassName } from '../list';
 import { TagClassName } from '../tag';
 import { z } from 'zod';
-
-const getRandomColor = () => {
-    const colors: Color[] = ['BLUE', 'GREEN', 'ORANGE', 'PURPLE', 'RED', 'YELLOW'];
-    return colors[Math.floor(Math.random() * colors.length)];
-};
+import { getRandomColor } from '@/lib/getRandomColor';
 
 const schema = z.object({
-    title: z.string().max(50),
-    content: z.string().max(500),
+    title: z.string().min(1, 'Title required').max(50, 'Title too long'),
+    content: z.string().min(1, 'Content required').max(500, 'Content too long'),
     color: z.nativeEnum(Color)
 });
 
@@ -61,19 +57,20 @@ const CreateTodoModal = () => {
                 className='fixed left-1/2 top-1/2 flex h-fit max-h-[90vh] min-h-10 w-max min-w-10 max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl px-16 pb-20'
                 style={{ backgroundColor: colors('TODO', data.color) }}>
                 <div className='ml-auto flex h-24 items-center'>
-                    <button id='close-modal' onClick={closeModal} className='shadow-hover p-2'>
+                    <button id='close-modal' onClick={closeModal} className='shadow-hover mt-12 p-2'>
                         <MdClose className='h-8 w-8' />
                     </button>
                 </div>
                 <input
                     name='title'
                     placeholder='Title'
-                    className='w-full text-3xl font-bold placeholder:font-normal focus-visible:outline-none'
+                    className='w-full text-3xl font-bold placeholder:font-semibold focus-visible:outline-none'
                     style={{ backgroundColor: colors('TODO', data.color) }}
                     maxLength={50}
                     spellCheck={false}
                     onChange={handleChange}
                     value={data.title}
+                    autoComplete='off'
                 />
                 <textarea
                     name='content'
@@ -84,6 +81,7 @@ const CreateTodoModal = () => {
                     maxLength={500}
                     onChange={handleChange}
                     value={data.content}
+                    autoComplete='off'
                 />
                 <div className='mt-4 flex items-center justify-between gap-4'>
                     <div>
@@ -94,7 +92,7 @@ const CreateTodoModal = () => {
                     </div>
                     <div className='flex items-center gap-4'>
                         <SelectColor />
-                        <button onClick={handleConfirm}>
+                        <button onClick={handleConfirm} className='shadow-hover p-2'>
                             <FaCheck className='h-6 w-6' />
                         </button>
                     </div>

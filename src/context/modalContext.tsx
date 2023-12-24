@@ -3,6 +3,8 @@
 import { PropsWithChildren, createContext, useState } from 'react';
 import { ModalContextType, ModalName } from '@/types';
 import CreateTodoModal from '@/components/modals/createTodoModal';
+import AddListModal from '@/components/modals/addListModal';
+import AddTagModal from '@/components/modals/addTagModal';
 
 export const ModalContext = createContext<ModalContextType | null>(null);
 
@@ -22,6 +24,10 @@ const ModalProvider = ({ children }: PropsWithChildren) => {
         switch (modalName) {
             case 'createTodo':
                 return <CreateTodoModal />;
+            case 'addList':
+                return <AddListModal />;
+            case 'addTag':
+                return <AddTagModal />;
             default:
                 return <></>;
         }
