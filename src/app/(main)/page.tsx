@@ -2,7 +2,6 @@ import Todo from '@/components/todo';
 import { db } from '@/lib/db';
 import { getQuery } from '@/lib/getQuery';
 import { initialProfile } from '@/lib/initialProfile';
-import { shadowHover } from '@/lib/shadowHover';
 import { SearchParams } from '@/types';
 import { FaPlus } from 'react-icons/fa6';
 
@@ -26,7 +25,7 @@ const MainPage = async ({ searchParams }: Props) => {
                 {todos.map((todo) => (
                     <Todo key={todo.id} todo={todo} />
                 ))}
-                <button className={shadowHover('grid h-72 w-72 place-items-center rounded-xl bg-slate-100')}>
+                <button className='shadow-hover grid h-72 w-72 place-items-center rounded-xl bg-slate-100'>
                     <FaPlus className='h-16 w-16' />
                 </button>
             </div>

@@ -1,5 +1,4 @@
 import { colors } from '@/lib/colors';
-import { shadowHover } from '@/lib/shadowHover';
 import { List as ListT } from '@prisma/client';
 import Link from 'next/link';
 
@@ -7,7 +6,7 @@ interface Props {
     list: Pick<ListT, 'name' | 'color'> & Partial<ListT>;
 }
 
-export const ListClassName = shadowHover('flex w-fit items-center gap-3 px-4 py-2');
+export const ListClassName = 'flex w-fit items-center gap-3 px-4 py-2 shadow-hover';
 
 const List = ({ list }: Props) => {
     return (
