@@ -1,16 +1,17 @@
 'use client';
 
 import { ModalContext } from '@/context/modalContext';
-import { useContext, type MouseEvent, useState } from 'react';
+import { useContext, type MouseEvent as MouseEventReact, useState, useEffect, useCallback } from 'react';
 import { MdClose } from 'react-icons/md';
 import SelectColor from '@/components/selectColor';
 import { colors } from '@/lib/colors';
-import { Color } from '@prisma/client';
+import { Color, Tag as TagT, List as ListT } from '@prisma/client';
 import { FaCheck, FaPlus } from 'react-icons/fa';
-import { ListClassName } from '../list';
-import { TagClassName } from '../tag';
+import List, { ListClassName } from '../list';
+import Tag, { TagClassName } from '../tag';
 import { z } from 'zod';
 import { getRandomColor } from '@/lib/getRandomColor';
+import axios from 'axios';
 
 const schema = z.object({
     title: z.string().min(1, 'Title required').max(50, 'Title too long'),
@@ -18,15 +19,71 @@ const schema = z.object({
     color: z.nativeEnum(Color)
 });
 
-type Schema = z.infer<typeof schema>;
+type Schema = z.infer<typeof schema> & {
+    lists: ListT[];
+    tags: TagT[];
+};
 
 const CreateTodoModal = () => {
     const { closeModal } = useContext(ModalContext)!;
     const [data, setData] = useState<Schema>({
         title: '',
         content: '',
-        color: getRandomColor()
+        color: getRandomColor(),
+        lists: [],
+        tags: []
     });
+    const [lists, setLists] = useState<ListT[]>([]);
+    const [tags, setTags] = useState<TagT[]>([]);
+    const [selecting, setSelecting] = useState<'list' | 'tag' | null>(null);
+
+    const fetchLists = async () => {
+        const res = await axios.get('/api/lists');
+        setLists(res.data);
+    };
+
+    const fetchTags = async () => {
+        const res = await axios.get('/api/tags');
+        setTags(res.data);
+    };
+
+    useEffect(() => {
+        fetchLists();
+        fetchTags();
+    }, []);
+
+    const handleClose = useCallback(() => {
+        if (selecting === 'list') {
+            document.getElementById('list-menu')?.classList.add('bubble-disappear');
+        } else if (selecting === 'tag') {
+            document.getElementById('tag-menu')?.classList.add('bubble-disappear');
+        }
+        setTimeout(() => {
+            setSelecting(null);
+        }, 200);
+    }, [selecting]);
+
+    useEffect(() => {
+        if (selecting === 'list') {
+            const handleClickOutside = (e: MouseEvent) => {
+                if (e.target === document.getElementById('list-menu') || e.target === document.getElementById('list-menu-content')) return;
+                handleClose();
+            };
+
+            document.addEventListener('click', handleClickOutside);
+
+            return () => document.removeEventListener('click', handleClickOutside);
+        } else if (selecting === 'tag') {
+            const handleClickOutside = (e: MouseEvent) => {
+                if (e.target === document.getElementById('tag-menu') || e.target === document.getElementById('tag-menu-content')) return;
+                handleClose();
+            };
+
+            document.addEventListener('click', handleClickOutside);
+
+            return () => document.removeEventListener('click', handleClickOutside);
+        }
+    }, [handleClose, selecting]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setData((prev) => ({
@@ -35,7 +92,7 @@ const CreateTodoModal = () => {
         }));
     };
 
-    const handleClick = (e: MouseEvent<HTMLElement>) => {
+    const handleClick = (e: MouseEventReact<HTMLElement>) => {
         if (e.target === document.getElementById('outside-modal')) {
             handleConfirm();
             closeModal();
@@ -45,11 +102,40 @@ const CreateTodoModal = () => {
     // TODO
     const handleConfirm = () => {};
 
-    // TODO
-    const handleAddTag = () => {};
+    const handleListSelect = (list: ListT) => {
+        if (data.lists.find((l) => l.id === list.id)) return;
+        setData((prev) => ({
+            ...prev,
+            lists: [...prev.lists, list]
+        }));
+        handleClose();
+    };
 
-    // TODO
-    const handleAddList = () => {};
+    const handleListRemove = (list: ListT) => {
+        setData((prev) => ({
+            ...prev,
+            lists: prev.lists.filter((l) => l.id !== list.id)
+        }));
+    };
+
+    const handleTagSelect = (tag: TagT) => {
+        if (data.tags.find((t) => t.id === tag.id)) return;
+        setData((prev) => ({
+            ...prev,
+            tags: [...prev.tags, tag]
+        }));
+        handleClose();
+    };
+
+    const handleTagRemove = (tag: TagT) => {
+        document.getElementById(`tag-btn-${tag.id}`)?.classList.add('bubble-disappear');
+        setTimeout(() => {
+            setData((prev) => ({
+                ...prev,
+                tags: prev.tags.filter((t) => t.id !== tag.id)
+            }));
+        }, 200);
+    };
 
     const handleColorChange = (color: Color) => {
         setData((prev) => ({
@@ -61,7 +147,7 @@ const CreateTodoModal = () => {
     return (
         <div id='outside-modal' onClick={handleClick} className='appear fixed inset-0 z-10 h-full w-full bg-black/40'>
             <div
-                className='fixed left-1/2 top-1/2 flex h-fit max-h-[90vh] min-h-10 w-max min-w-10 max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl px-16 pb-20'
+                className='fixed left-1/2 top-1/2 flex h-fit max-h-[90vh] min-h-10 w-[560px] min-w-10 max-w-[90vw] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl px-16 pb-20 transition-all'
                 style={{ backgroundColor: colors('TODO', data.color) }}>
                 <div className='ml-auto flex h-24 items-center'>
                     <button id='close-modal' onClick={closeModal} className='shadow-hover mt-12 p-2'>
@@ -71,7 +157,7 @@ const CreateTodoModal = () => {
                 <input
                     name='title'
                     placeholder='Title'
-                    className='w-full text-3xl font-bold placeholder:font-semibold focus-visible:outline-none'
+                    className='w-full text-3xl font-bold transition-colors placeholder:font-semibold focus-visible:outline-none'
                     style={{ backgroundColor: colors('TODO', data.color) }}
                     maxLength={50}
                     spellCheck={false}
@@ -82,7 +168,7 @@ const CreateTodoModal = () => {
                 <textarea
                     name='content'
                     style={{ backgroundColor: colors('TODO', data.color) }}
-                    className='my-4 w-full resize-none pr-3 text-lg focus-visible:outline-none'
+                    className='my-4 w-full resize-none pr-3 text-lg transition-colors focus-visible:outline-none'
                     rows={9}
                     placeholder='Write a todo...'
                     maxLength={500}
@@ -91,11 +177,27 @@ const CreateTodoModal = () => {
                     autoComplete='off'
                 />
                 <div className='mt-4 flex items-center justify-between gap-4'>
-                    <div>
-                        <button onClick={handleAddList} className={ListClassName}>
+                    <div className='relative'>
+                        <button onClick={() => setSelecting('list')} className={ListClassName}>
                             <FaPlus className='h-4 w-4 text-black/80' />
                             <p className='text-md font-semibold text-black/80'>Add To List</p>
                         </button>
+                        {selecting === 'list' && (
+                            <div id='list-menu' className='bubble-appear absolute left-0 top-0 z-20 mt-12 rounded-3xl bg-slate-50 px-4 py-2'>
+                                <div id='list-menu-content' className='flex w-max flex-col gap-2'>
+                                    {lists.map((list) => (
+                                        <List button onClick={handleListSelect} key={list.id} list={list} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        {data.lists.length > 0 && (
+                            <div className='flex flex-col gap-2'>
+                                {data.lists.map((list) => (
+                                    <List button onClick={handleListRemove} key={list.id} list={list} />
+                                ))}
+                            </div>
+                        )}
                     </div>
                     <div className='flex items-center gap-4'>
                         <SelectColor scope='TODO' handleSelection={handleColorChange} />
@@ -104,10 +206,26 @@ const CreateTodoModal = () => {
                         </button>
                     </div>
                 </div>
-                <div className='mt-2 flex items-center gap-4'>
-                    <button onClick={handleAddTag} className={TagClassName + ' border-2 border-zinc-800/30'}>
+                <div className='relative mt-4 flex flex-wrap items-center gap-4'>
+                    <button onClick={() => setSelecting('tag')} className={TagClassName}>
                         + Add Tag
                     </button>
+                    {selecting === 'tag' && (
+                        <div id='tag-menu' className='bubble-appear absolute left-0 top-0 z-20 mt-12 rounded-3xl bg-slate-50 px-4 py-2'>
+                            <div id='tag-menu-content' className='flex w-max flex-col gap-2'>
+                                {tags.map((tag) => (
+                                    <Tag button onClick={handleTagSelect} key={tag.id} tag={tag} />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    {data.tags.length > 0 && (
+                        <>
+                            {data.tags.map((tag) => (
+                                <Tag button onClick={handleTagRemove} key={tag.id} tag={tag} />
+                            ))}
+                        </>
+                    )}
                 </div>
             </div>
         </div>

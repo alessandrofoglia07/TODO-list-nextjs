@@ -78,7 +78,7 @@ const Navbar = async () => {
                         afterSignOutUrl='/'
                         appearance={{
                             elements: {
-                                avatarBox: 'h-[48px] w-[48px]',
+                                avatarBox: 'h-12 w-12',
                                 card: 'bg-slate-200'
                             }
                         }}

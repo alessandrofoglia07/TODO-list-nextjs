@@ -13,7 +13,6 @@ const ModalProvider = ({ children }: PropsWithChildren) => {
 
     const openModal = (name: ModalName) => {
         setModalName(name);
-        console.log(name);
     };
 
     const closeModal = () => {
