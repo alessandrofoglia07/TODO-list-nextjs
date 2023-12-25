@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
-import Navbar from '@/components/navbar';
+import Navbar from '@/components/navbar/navbar';
 import ModalProvider from '@/context/modalContext';
 
 const font = Poppins({

@@ -6,6 +6,7 @@
     *::-webkit-scrollbar {
         background-color: transparent;
         width: 10px;
+        height: 10px;
     }
     *::-webkit-scrollbar-track {
         background-color: transparent;
@@ -16,6 +17,9 @@
     }
     *::-webkit-scrollbar-button {
         display: none;
+    }
+    *::-webkit-scrollbar-corner {
+        background-color: transparent;
     }
     /* For Firefox */
     * {
@@ -51,6 +55,24 @@
     }
 }
 
+@keyframes background-grow {
+    0% {
+        background-size: 100%;
+    }
+    100% {
+        background-size: 200%;
+    }
+}
+
+@keyframes background-shrink {
+    0% {
+        background-size: 200%;
+    }
+    100% {
+        background-size: 100%;
+    }
+}
+
 @layer utilities {
     .shadow-hover {
         @apply relative before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0 before:block before:rounded-xl before:bg-black before:opacity-0 before:transition-opacity hover:before:opacity-10;
@@ -67,5 +89,19 @@
 
     .bubble-disappear {
         animation: bubble-disappear 0.15s ease-in-out forwards;
+    }
+
+    .bg-radial-gradient {
+        background: rgb(241,245,249);
+        background: radial-gradient(circle, rgba(229, 229, 229 ,1) 40%, rgba(229,229,229,0) 100%);
+        background-position: center;
+    }
+
+    .bg-grow {
+        animation: background-grow 0.3s ease-in-out forwards;
+    }
+
+    .bg-shrink {
+        animation: background-shrink 0.3s ease-in-out forwards;
     }
 }

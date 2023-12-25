@@ -3,11 +3,11 @@ import { IoMdSearch } from 'react-icons/io';
 import { currentProfile } from '@/lib/currentProfile';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
-import List from './list';
-import Tag from './tag';
 import { UserButton } from '@clerk/nextjs';
-import NewTagBtn from './defaultButtons/newTagBtn';
-import NewListBtn from './defaultButtons/newListBtn';
+import NewTagBtn from '../defaultButtons/newTagBtn';
+import NewListBtn from '../defaultButtons/newListBtn';
+import Tags from './tags';
+import Lists from './lists';
 
 const Navbar = async () => {
     const user = await currentProfile();
@@ -30,7 +30,7 @@ const Navbar = async () => {
             userId: user.id
         },
         orderBy: {
-            createdAt: 'asc'
+            createdAt: 'desc'
         }
     });
 
@@ -57,23 +57,19 @@ const Navbar = async () => {
                 </div>
                 <div id='lists' className='mt-10 w-full'>
                     <h4 className='text-md pb-2 font-extrabold uppercase text-[#686868]'>Lists</h4>
-                    <div className='flex w-full flex-col gap-2'>
-                        {lists.map((list) => (
-                            <List key={list.id} list={list} />
-                        ))}
+                    <div className='flex max-h-[25vh] w-full flex-col gap-2 overflow-auto'>
                         <NewListBtn />
+                        <Lists lists={lists} />
                     </div>
                 </div>
                 <div id='tags' className='mt-10 w-full'>
                     <h4 className='text-md pb-2 font-extrabold uppercase text-[#686868]'>Tags</h4>
-                    <div className='flex h-fit flex-wrap gap-2'>
-                        {tags.map((tag) => (
-                            <Tag key={tag.id} tag={tag} />
-                        ))}
+                    <div className='flex h-fit max-h-[25vh] flex-wrap gap-2 overflow-auto'>
                         <NewTagBtn />
+                        <Tags tags={tags} />
                     </div>
                 </div>
-                <div className='absolute bottom-0 mb-8 w-full'>
+                <div className='absolute bottom-8 w-full'>
                     <UserButton
                         afterSignOutUrl='/'
                         appearance={{
