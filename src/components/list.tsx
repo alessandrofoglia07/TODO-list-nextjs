@@ -11,13 +11,15 @@ interface Props {
     list: ListT;
     button?: boolean;
     onClick?: (list: ListT) => void;
+    sideButtons?: boolean;
 }
 
-export const ListClassName = 'flex w-full items-center gap-3 px-2 py-2 shadow-hover';
+export const ListClassName = 'flex w-max max-w-full items-center gap-3 px-2 py-2 shadow-hover';
 
 interface ContentProps {
     list: ListT;
     hovering: boolean;
+    sideButtons?: boolean;
 }
 
 export const ButtonListTagClassname = 'bg-radial-gradient p-1 absolute right-2 rounded-lg text-[#686868] transition-all';
@@ -34,11 +36,11 @@ const handleHover = (id: string) => {
     document.getElementById('little-list-btn-' + id)?.classList.add('bg-grow');
 };
 
-const Content = ({ list, hovering }: ContentProps) => (
+const Content = ({ list, hovering, sideButtons }: ContentProps) => (
     <>
         <div className='mx-1 aspect-square h-4 rounded-md' style={{ backgroundColor: colors('LIST', list.color) }} />
         <p className='text-md w-full break-words font-semibold text-[#686868]'>{list.name}</p>
-        {hovering && (
+        {sideButtons && hovering && (
             <>
                 <button id='little-list-btn-1' onMouseEnter={() => handleHover('1')} onMouseLeave={() => handleClose('1')} className={ButtonListTagClassname + ' !right-12'}>
                     <MdModeEdit className='h-6 w-6' />
@@ -51,7 +53,7 @@ const Content = ({ list, hovering }: ContentProps) => (
     </>
 );
 
-const List = ({ list, button, onClick = (_list: ListT) => {} }: Props) => {
+const List = ({ list, button, onClick = (_list: ListT) => {}, sideButtons }: Props) => {
     const [hovering, setHovering] = useState(false);
 
     if (!button) {
@@ -63,13 +65,13 @@ const List = ({ list, button, onClick = (_list: ListT) => {} }: Props) => {
                     list: list.name
                 })}`}
                 className={ListClassName}>
-                <Content list={list} hovering={hovering} />
+                <Content sideButtons={sideButtons} list={list} hovering={hovering} />
             </Link>
         );
     } else {
         return (
             <button onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)} className={ListClassName} onClick={() => onClick(list)}>
-                <Content list={list} hovering={hovering} />
+                <Content sideButtons={sideButtons} list={list} hovering={hovering} />
             </button>
         );
     }

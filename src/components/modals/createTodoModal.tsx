@@ -12,6 +12,7 @@ import Tag, { TagClassName } from '../tag';
 import { z } from 'zod';
 import { getRandomColor } from '@/lib/getRandomColor';
 import axios from 'axios';
+import Lists from '../navbar/lists';
 
 const schema = z.object({
     title: z.string().min(1, 'Title required').max(50, 'Title too long'),
@@ -66,7 +67,12 @@ const CreateTodoModal = () => {
     useEffect(() => {
         if (selecting === 'list') {
             const handleClickOutside = (e: MouseEvent) => {
-                if (e.target === document.getElementById('list-menu') || e.target === document.getElementById('list-menu-content')) return;
+                if (
+                    e.target === document.getElementById('list-menu') ||
+                    e.target === document.getElementById('list-menu-content') ||
+                    e.target === document.getElementById('see-all-lists-btn')
+                )
+                    return;
                 handleClose();
             };
 
@@ -183,16 +189,14 @@ const CreateTodoModal = () => {
                             <p className='text-md font-semibold text-black/80'>Add To List</p>
                         </button>
                         {selecting === 'list' && (
-                            <div id='list-menu' className='bubble-appear absolute left-0 top-0 z-20 mt-12 rounded-3xl bg-slate-50 px-4 py-2'>
-                                <div id='list-menu-content' className='flex w-max flex-col gap-2'>
-                                    {lists.map((list) => (
-                                        <List button onClick={handleListSelect} key={list.id} list={list} />
-                                    ))}
+                            <div id='list-menu' className='bubble-appear absolute bottom-0 left-0 z-20 mb-12 rounded-3xl bg-slate-50 px-4 py-2'>
+                                <div id='list-menu-content' className='max-w-70vw w-max'>
+                                    <Lists listsAs='button' onClick={handleListSelect} showAllId='see-all-lists-btn' lists={lists} listNumber={5} />
                                 </div>
                             </div>
                         )}
                         {data.lists.length > 0 && (
-                            <div className='flex flex-col gap-2'>
+                            <div className='flex max-h-[20vh] flex-col gap-2 overflow-auto'>
                                 {data.lists.map((list) => (
                                     <List button onClick={handleListRemove} key={list.id} list={list} />
                                 ))}
@@ -211,7 +215,7 @@ const CreateTodoModal = () => {
                         + Add Tag
                     </button>
                     {selecting === 'tag' && (
-                        <div id='tag-menu' className='bubble-appear absolute left-0 top-0 z-20 mt-12 rounded-3xl bg-slate-50 px-4 py-2'>
+                        <div id='tag-menu' className='bubble-appear absolute bottom-0 left-0 z-20 mb-12 rounded-3xl bg-slate-50 px-4 py-2'>
                             <div id='tag-menu-content' className='flex w-max flex-col gap-2'>
                                 {tags.map((tag) => (
                                     <Tag button onClick={handleTagSelect} key={tag.id} tag={tag} />
@@ -220,11 +224,11 @@ const CreateTodoModal = () => {
                         </div>
                     )}
                     {data.tags.length > 0 && (
-                        <>
+                        <div className='max-h-[20vh] overflow-y-auto'>
                             {data.tags.map((tag) => (
                                 <Tag button onClick={handleTagRemove} key={tag.id} tag={tag} />
                             ))}
-                        </>
+                        </div>
                     )}
                 </div>
             </div>
