@@ -1,13 +1,14 @@
 'use client';
 
 import { colors } from '@/lib/colors';
+import { Scope } from '@/types';
 import { Color } from '@prisma/client';
 import { useState, useEffect } from 'react';
 import { IoColorPalette } from 'react-icons/io5';
 
 interface Props {
     handleSelection: (color: Color) => void;
-    scope?: 'TODO' | 'TAG' | 'LIST';
+    scope?: Scope;
 }
 
 const SelectColor = ({ handleSelection, scope = 'TODO' }: Props) => {

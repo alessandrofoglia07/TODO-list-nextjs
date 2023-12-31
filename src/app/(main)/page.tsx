@@ -12,7 +12,7 @@ interface Props {
 const MainPage = async ({ searchParams }: Props) => {
     const user = await initialProfile();
 
-    const query = getQuery(searchParams, user);
+    const query = getQuery(user, searchParams);
 
     const todos = await db.todo.findMany({
         where: query

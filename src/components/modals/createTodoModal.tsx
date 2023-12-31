@@ -9,25 +9,16 @@ import { Color, Tag as TagT, List as ListT } from '@prisma/client';
 import { FaCheck, FaPlus } from 'react-icons/fa';
 import List, { ListClassName } from '../list';
 import Tag, { TagClassName } from '../tag';
-import { z } from 'zod';
 import { getRandomColor } from '@/lib/getRandomColor';
 import axios from 'axios';
 import Lists from '../navbar/lists';
-
-const schema = z.object({
-    title: z.string().min(1, 'Title required').max(50, 'Title too long'),
-    content: z.string().min(1, 'Content required').max(500, 'Content too long'),
-    color: z.nativeEnum(Color)
-});
-
-type Schema = z.infer<typeof schema> & {
-    lists: ListT[];
-    tags: TagT[];
-};
+import { TodoSchema, todoSchema } from '@/lib/schemas/todoSchema';
+import { useRouter } from 'next/navigation';
 
 const CreateTodoModal = () => {
+    const router = useRouter();
     const { closeModal } = useContext(ModalContext)!;
-    const [data, setData] = useState<Schema>({
+    const [data, setData] = useState<TodoSchema>({
         title: '',
         content: '',
         color: getRandomColor(),
@@ -37,6 +28,7 @@ const CreateTodoModal = () => {
     const [lists, setLists] = useState<ListT[]>([]);
     const [tags, setTags] = useState<TagT[]>([]);
     const [selecting, setSelecting] = useState<'list' | 'tag' | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchLists = async () => {
         const res = await axios.get('/api/lists');
@@ -105,8 +97,21 @@ const CreateTodoModal = () => {
         }
     };
 
-    // TODO
-    const handleConfirm = () => {};
+    const handleConfirm = async () => {
+        try {
+            const val = todoSchema.safeParse(data);
+
+            if (!val.success) return setError(val.error.errors[0].message);
+
+            await axios.post('/api/todos', data);
+
+            router.refresh();
+
+            closeModal();
+        } catch (err) {
+            setError('Something went wrong');
+        }
+    };
 
     const handleListSelect = (list: ListT) => {
         if (data.lists.find((l) => l.id === list.id)) return;
@@ -182,6 +187,7 @@ const CreateTodoModal = () => {
                     value={data.content}
                     autoComplete='off'
                 />
+                {error && <p className='text-lg font-semibold text-red-600'>{error}</p>}
                 <div className='mt-4 flex items-center justify-between gap-4'>
                     <div className='relative'>
                         <button onClick={() => setSelecting('list')} className={ListClassName}>

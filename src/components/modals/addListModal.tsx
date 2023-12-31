@@ -3,7 +3,6 @@
 import { ModalContext } from '@/context/modalContext';
 import { Color } from '@prisma/client';
 import { useContext, useState, MouseEvent } from 'react';
-import { z } from 'zod';
 import SelectColor from '../selectColor';
 import { FaCheck } from 'react-icons/fa';
 import { getRandomColor } from '@/lib/getRandomColor';
@@ -11,18 +10,12 @@ import { colors } from '@/lib/colors';
 import axios from 'axios';
 import { MdClose } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
-
-const schema = z.object({
-    name: z.string().min(1, 'List name required').max(20, 'List name too long'),
-    color: z.nativeEnum(Color)
-});
-
-type Schema = z.infer<typeof schema>;
+import { ListSchema, listSchema } from '@/lib/schemas/listSchema';
 
 const AddListModal = () => {
     const router = useRouter();
     const { closeModal } = useContext(ModalContext)!;
-    const [data, setData] = useState<Schema>({
+    const [data, setData] = useState<ListSchema>({
         name: '',
         color: getRandomColor()
     });
@@ -45,7 +38,7 @@ const AddListModal = () => {
         try {
             setError(null);
 
-            const validate = schema.safeParse(data);
+            const validate = listSchema.safeParse(data);
             if (!validate.success) return setError(validate.error.errors[0].message);
 
             await axios.post('/api/lists', data);

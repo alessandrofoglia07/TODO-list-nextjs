@@ -2,10 +2,12 @@ export type UnkObj = Record<string, unknown>;
 
 export type SearchParams = Record<string, string | string[] | undefined>;
 
-export type ModalName = 'createTodo' | 'editTodo' | 'deleteTodo' | 'addTag' | 'addList';
+export type ModalName = 'createTodo' | 'addTag' | 'addList' | 'deleteList';
 
 export interface ModalContextType {
     modalName: string | null;
-    openModal: (name: ModalName) => void;
+    openModal: (name: ModalName, data?: UnkObj) => void;
     closeModal: () => void;
 }
+
+export type Scope = 'TODO' | 'LIST' | 'TAG';

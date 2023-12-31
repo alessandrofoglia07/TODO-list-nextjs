@@ -1,5 +1,6 @@
 import { currentProfile } from '@/lib/currentProfile';
 import { db } from '@/lib/db';
+import { tagSchema } from '@/lib/schemas/tagSchema';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (req: NextRequest) => {
@@ -9,6 +10,12 @@ export const POST = async (req: NextRequest) => {
 
     if (!user) {
         return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const val = tagSchema.safeParse(data);
+
+    if (!val.success) {
+        return new NextResponse(val.error.message, { status: 400 });
     }
 
     const newTag = await db.tag.create({
@@ -22,7 +29,7 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(newTag);
 };
 
-export const GET = async (req: NextRequest) => {
+export const GET = async () => {
     const user = await currentProfile();
 
     if (!user) {
