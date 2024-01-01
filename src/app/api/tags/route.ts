@@ -44,3 +44,31 @@ export const GET = async () => {
 
     return NextResponse.json(tags);
 };
+
+export const DELETE = async (req: NextRequest) => {
+    const user = await currentProfile();
+    const data = await req.json();
+
+    if (!user) {
+        return new NextResponse(null, { status: 401 });
+    }
+
+    const tag = await db.tag.findUnique({
+        where: {
+            userId: user.id,
+            id: data.id
+        }
+    });
+
+    if (!tag) {
+        return new NextResponse('', { status: 404 });
+    }
+
+    await db.tag.delete({
+        where: {
+            id: tag.id
+        }
+    });
+
+    return new NextResponse('Deleted', { status: 200 });
+};

@@ -1,7 +1,7 @@
 'use client';
 
 import { FaPlus } from 'react-icons/fa6';
-import { ListClassName } from '@/components/list';
+import { ListClassName } from '@/components/list/list';
 import { useContext } from 'react';
 import { ModalContext } from '@/context/modalContext';
 

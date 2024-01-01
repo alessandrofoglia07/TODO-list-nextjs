@@ -1,7 +1,7 @@
 'use client';
 
 import { List as ListT } from '@prisma/client';
-import List from '@/components/list';
+import List from '@/components/list/list';
 import { useState } from 'react';
 
 const DEFAULT_LIST_NUMBER = parseInt(process.env.DEFAULT_LIST_NUMBER || '3');
@@ -10,12 +10,12 @@ interface Props {
     lists: ListT[];
     listsAs?: 'button' | 'link';
     onClick?: (list: ListT) => void;
-    sideButtons?: boolean;
+    modifiable?: boolean;
     listNumber?: number;
     showAllId?: string;
 }
 
-const Lists = ({ lists, sideButtons, listNumber, showAllId, listsAs = 'link', onClick }: Props) => {
+const Lists = ({ lists, modifiable, listNumber, showAllId, listsAs = 'link', onClick }: Props) => {
     const [seeAll, setSeeAll] = useState(false);
 
     const handleShowAll = () => {
@@ -27,7 +27,7 @@ const Lists = ({ lists, sideButtons, listNumber, showAllId, listsAs = 'link', on
     return (
         <>
             {(seeAll ? lists : lists.slice(0, listNumber || DEFAULT_LIST_NUMBER)).map((list) => (
-                <List button={listsAs === 'button'} onClick={listsAs === 'button' ? onClick : undefined} sideButtons={sideButtons} key={list.id} list={list} />
+                <List button={listsAs === 'button'} onClick={listsAs === 'button' ? onClick : undefined} modifiable={modifiable} key={list.id} list={list} />
             ))}
             {!seeAll && lists.length > DEFAULT_LIST_NUMBER && (
                 <button

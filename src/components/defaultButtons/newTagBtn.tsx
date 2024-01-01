@@ -1,6 +1,6 @@
 'use client';
 
-import { TagClassName } from '@/components/tag';
+import { TagClassName } from '@/components/tag/tag';
 import { ModalContext } from '@/context/modalContext';
 import { useContext } from 'react';
 

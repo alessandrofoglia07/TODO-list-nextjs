@@ -33,6 +33,8 @@ const ModalProvider = ({ children }: PropsWithChildren) => {
                 return <AddTagModal />;
             case 'deleteList':
                 return <DeleteModal scope='LIST' name={modalData?.name as string | undefined} id={modalData?.id as string | undefined} />;
+            case 'deleteTag':
+                return <DeleteModal scope='TAG' name={modalData?.name as string | undefined} id={modalData?.id as string | undefined} />;
             default:
                 return <></>;
         }

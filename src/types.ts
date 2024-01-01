@@ -2,7 +2,7 @@ export type UnkObj = Record<string, unknown>;
 
 export type SearchParams = Record<string, string | string[] | undefined>;
 
-export type ModalName = 'createTodo' | 'addTag' | 'addList' | 'deleteList';
+export type ModalName = 'createTodo' | 'addTag' | 'addList' | 'deleteList' | 'deleteTag';
 
 export interface ModalContextType {
     modalName: string | null;
