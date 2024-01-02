@@ -28,7 +28,7 @@ const DeleteModal = ({ scope, name, id }: Props) => {
             if (!id) return closeModal();
 
             if (scope === 'LIST') {
-                const res = await axios.delete(`/api/lists`, { data: { id } });
+                await axios.delete(`/api/lists`, { data: { id } });
             } else if (scope === 'TAG') {
                 await axios.delete(`/api/tags`, { data: { id } });
             }

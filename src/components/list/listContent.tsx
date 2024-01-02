@@ -22,6 +22,10 @@ const Content = ({ list, hovering, modifiable }: Props) => {
         openModal('deleteList', { id: list.id, name: list.name });
     };
 
+    const handleEdit = () => {
+        openModal('editList', { id: list.id, name: list.name, color: list.color });
+    };
+
     const handleClose = (id: string) => {
         document.getElementById('little-list-btn-' + id)?.classList.add('bg-shrink');
         setTimeout(() => {
@@ -40,7 +44,12 @@ const Content = ({ list, hovering, modifiable }: Props) => {
             <p className='text-md w-full break-words font-semibold text-[#686868]'>{list.name}</p>
             {modifiable && hovering && (
                 <>
-                    <button id='little-list-btn-1' onMouseEnter={() => handleHover('1')} onMouseLeave={() => handleClose('1')} className={ButtonListClassname + ' !right-12'}>
+                    <button
+                        id='little-list-btn-1'
+                        onMouseEnter={() => handleHover('1')}
+                        onMouseLeave={() => handleClose('1')}
+                        className={ButtonListClassname + ' !right-12'}
+                        onClick={handleEdit}>
                         <MdModeEdit className='h-6 w-6' />
                     </button>
                     <button id='little-list-btn-2' onMouseEnter={() => handleHover('2')} onMouseLeave={() => handleClose('2')} className={ButtonListClassname} onClick={handleDelete}>

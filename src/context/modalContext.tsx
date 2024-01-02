@@ -6,6 +6,8 @@ import CreateTodoModal from '@/components/modals/createTodoModal';
 import AddListModal from '@/components/modals/addListModal';
 import AddTagModal from '@/components/modals/addTagModal';
 import DeleteModal from '@/components/modals/deleteModal';
+import EditModal from '@/components/modals/editModal';
+import { Color } from '@prisma/client';
 
 export const ModalContext = createContext<ModalContextType | null>(null);
 
@@ -24,6 +26,9 @@ const ModalProvider = ({ children }: PropsWithChildren) => {
     };
 
     const renderModal = () => {
+        const name = modalData?.name as string | undefined;
+        const id = modalData?.id as string | undefined;
+
         switch (modalName) {
             case 'createTodo':
                 return <CreateTodoModal />;
@@ -32,9 +37,11 @@ const ModalProvider = ({ children }: PropsWithChildren) => {
             case 'addTag':
                 return <AddTagModal />;
             case 'deleteList':
-                return <DeleteModal scope='LIST' name={modalData?.name as string | undefined} id={modalData?.id as string | undefined} />;
+                return <DeleteModal scope='LIST' name={name} id={id} />;
             case 'deleteTag':
-                return <DeleteModal scope='TAG' name={modalData?.name as string | undefined} id={modalData?.id as string | undefined} />;
+                return <DeleteModal scope='TAG' name={name} id={id} />;
+            case 'editList':
+                return <EditModal scope='LIST' name={name} id={id} color={modalData?.color as Color | undefined} />;
             default:
                 return <></>;
         }

@@ -1,7 +1,9 @@
 import { currentProfile } from '@/lib/currentProfile';
 import { db } from '@/lib/db';
 import { listSchema } from '@/lib/schemas/listSchema';
+import { Color } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 export const POST = async (req: NextRequest) => {
     const data = await req.json();
@@ -71,4 +73,38 @@ export const DELETE = async (req: NextRequest) => {
     });
 
     return new NextResponse('Deleted', { status: 200 });
+};
+
+export const PATCH = async (req: NextRequest) => {
+    const user = await currentProfile();
+    const data = await req.json();
+
+    if (!user) {
+        return new NextResponse(null, { status: 401 });
+    }
+
+    const schema = z.object({
+        id: z.string(),
+        name: z.string(),
+        color: z.nativeEnum(Color)
+    });
+
+    const val = schema.safeParse(data);
+
+    if (!val.success) {
+        return new NextResponse(val.error.message, { status: 400 });
+    }
+
+    const list = await db.list.update({
+        where: {
+            userId: user.id,
+            id: data.id
+        },
+        data: {
+            name: data.name,
+            color: data.color
+        }
+    });
+
+    return NextResponse.json(list);
 };
