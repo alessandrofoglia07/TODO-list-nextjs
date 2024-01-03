@@ -21,6 +21,10 @@ const Content = ({ tag, modifiable }: Props) => {
         openModal('deleteTag', { name: tag.name, id: tag.id });
     };
 
+    const handleEdit = () => {
+        openModal('editTag', { name: tag.name, id: tag.id, color: tag.color });
+    };
+
     const handleClose = (id: string) => {
         document.getElementById('little-tag-btn-' + id)?.classList.add('bg-shrink');
         setTimeout(() => {
@@ -38,7 +42,12 @@ const Content = ({ tag, modifiable }: Props) => {
             <p className='w-[calc(100%-64px)] break-words'>{tag.name}</p>
             {modifiable && (
                 <div className='z-10 flex w-12 items-center gap-1 pl-1'>
-                    <button id='little-tag-btn-1' onMouseEnter={() => handleHover('1')} onMouseLeave={() => handleClose('1')} className={ButtonTagClassname + ' !right-12'}>
+                    <button
+                        id='little-tag-btn-1'
+                        onMouseEnter={() => handleHover('1')}
+                        onMouseLeave={() => handleClose('1')}
+                        className={ButtonTagClassname + ' !right-12'}
+                        onClick={handleEdit}>
                         <MdModeEdit className='h-6 w-6' />
                     </button>
                     <button id='little-tag-btn-2' onMouseEnter={() => handleHover('2')} onMouseLeave={() => handleClose('2')} className={ButtonTagClassname} onClick={handleDelete}>

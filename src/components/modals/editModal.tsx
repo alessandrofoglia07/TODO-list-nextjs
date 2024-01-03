@@ -64,19 +64,39 @@ const EditModal = ({ scope, name, id, color }: Props) => {
                 <h2 className='mb-4 pr-16 pt-8 text-lg font-semibold'>
                     Edit {name || 'this'} {scope === 'LIST' ? 'list' : 'tag'}
                 </h2>
-                <div className='flex items-center py-4'>
-                    {data.color && <div className='ml-1 mr-3 aspect-square h-4 rounded-md' style={{ backgroundColor: colors('LIST', data.color) }} />}
-                    <input
-                        name='name'
-                        placeholder='Name'
-                        className='w-full text-3xl font-bold placeholder:font-semibold focus-visible:outline-none'
-                        maxLength={20}
-                        spellCheck={false}
-                        onChange={(e) => setData((prev) => ({ ...prev, name: e.target.value }))}
-                        value={data.name}
-                        autoComplete='off'
-                    />
-                </div>
+                {scope === 'LIST' ? (
+                    <div className='flex items-center py-4'>
+                        {data.color && <div className='ml-1 mr-3 aspect-square h-4 rounded-md' style={{ backgroundColor: colors('LIST', data.color) }} />}
+                        <input
+                            name='name'
+                            placeholder='Name'
+                            className='w-full text-3xl font-bold placeholder:font-semibold focus-visible:outline-none'
+                            maxLength={20}
+                            spellCheck={false}
+                            onChange={(e) => setData((prev) => ({ ...prev, name: e.target.value }))}
+                            value={data.name}
+                            autoComplete='off'
+                        />
+                    </div>
+                ) : scope === 'TAG' ? (
+                    <div className='flex items-center'>
+                        {data.color && (
+                            <div className='w-fit rounded-xl px-4 py-3 font-bold text-black/80' style={{ backgroundColor: colors('TAG', data.color) }}>
+                                <input
+                                    name='name'
+                                    placeholder='Name'
+                                    className='text-3xl font-bold placeholder:font-semibold focus-visible:outline-none'
+                                    style={{ backgroundColor: colors('TAG', data.color) }}
+                                    maxLength={20}
+                                    spellCheck={false}
+                                    onChange={(e) => setData((prev) => ({ ...prev, name: e.target.value }))}
+                                    value={data.name}
+                                    autoComplete='off'
+                                />
+                            </div>
+                        )}
+                    </div>
+                ) : null}
                 <div className='mt-4 flex items-center justify-end gap-4'>
                     <div className='flex items-center gap-4'>
                         <SelectColor scope='LIST' handleSelection={(color) => setData((prev) => ({ ...prev, color }))} />

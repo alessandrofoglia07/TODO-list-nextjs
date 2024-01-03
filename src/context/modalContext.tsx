@@ -42,6 +42,8 @@ const ModalProvider = ({ children }: PropsWithChildren) => {
                 return <DeleteModal scope='TAG' name={name} id={id} />;
             case 'editList':
                 return <EditModal scope='LIST' name={name} id={id} color={modalData?.color as Color | undefined} />;
+            case 'editTag':
+                return <EditModal scope='TAG' name={name} id={id} color={modalData?.color as Color | undefined} />;
             default:
                 return <></>;
         }
