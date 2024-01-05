@@ -12,8 +12,9 @@ interface Props {
     hovering: boolean;
 }
 
-const ButtonTagClassname = 'w-8 h-8 p-1 rounded-lg text-[#686868] hover:bg-black/10 transition-all';
+const ButtonTagClassname = 'w-8 h-8 px-1 rounded-lg text-[#686868] hover:bg-black/10 transition-all';
 
+// TODO: make this look better
 const Content = ({ tag, modifiable, hovering }: Props) => {
     const { openModal } = useContext(ModalContext)!;
 
@@ -38,8 +39,8 @@ const Content = ({ tag, modifiable, hovering }: Props) => {
     };
 
     return (
-        <div className='flex w-full items-center'>
-            <p className='w-[calc(100%-64px)] break-words'>{tag.name}</p>
+        <div className='flex h-8 w-full min-w-fit items-center pr-3'>
+            <p className='w-[calc(100%-64px)] min-w-fit break-words'>{tag.name}</p>
             {modifiable && (
                 <div className='z-10 flex w-12 items-center gap-1 pl-1'>
                     {hovering && (

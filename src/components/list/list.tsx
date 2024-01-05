@@ -10,11 +10,12 @@ interface Props {
     button?: boolean;
     onClick?: (list: ListT) => void;
     modifiable?: boolean;
+    className?: string;
 }
 
 export const ListClassName = 'flex w-full items-center gap-3 px-2 py-2 shadow-hover';
 
-const List = ({ list, button, onClick = (_list: ListT) => {}, modifiable }: Props) => {
+const List = ({ list, button, onClick = (_list: ListT) => {}, modifiable, className }: Props) => {
     const [hovering, setHovering] = useState(false);
 
     if (!button) {
@@ -23,15 +24,20 @@ const List = ({ list, button, onClick = (_list: ListT) => {}, modifiable }: Prop
                 onMouseEnter={() => setHovering(true)}
                 onMouseLeave={() => setHovering(false)}
                 href={`/?${new URLSearchParams({
-                    list: list.name
+                    list: list.name,
+                    id: list.id
                 })}`}
-                className={ListClassName}>
+                className={ListClassName + (className ? ' ' + className : '')}>
                 <Content modifiable={modifiable} list={list} hovering={hovering} />
             </Link>
         );
     } else {
         return (
-            <button onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)} className={ListClassName} onClick={() => onClick(list)}>
+            <button
+                onMouseEnter={() => setHovering(true)}
+                onMouseLeave={() => setHovering(false)}
+                className={ListClassName + (className ? ' ' + className : '')}
+                onClick={() => onClick(list)}>
                 <Content modifiable={modifiable} list={list} hovering={hovering} />
             </button>
         );

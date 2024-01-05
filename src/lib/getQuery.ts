@@ -13,7 +13,9 @@ export const getQuery = (user: any, searchParams?: SearchParams) => {
 
     if (!searchParams) return query;
 
-    const { list, tag } = searchParams;
+    const { list, tag, id } = searchParams;
+
+    if (!id) return query;
 
     if (list) {
         query = {

@@ -64,7 +64,7 @@ const Navbar = async () => {
                 </div>
                 <div id='tags' className='mt-10 w-full'>
                     <h4 className='text-md pb-2 font-extrabold uppercase text-[#686868]'>Tags</h4>
-                    <div className='flex h-fit max-h-[25vh] flex-wrap gap-2 overflow-auto'>
+                    <div className='flex h-fit max-h-[25vh] w-full flex-wrap gap-2 overflow-auto'>
                         <NewTagBtn />
                         <Tags tags={tags} modifiable />
                     </div>

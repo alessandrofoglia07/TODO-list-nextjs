@@ -42,7 +42,7 @@ model Todo {
 
 model List {
   id    String @id @default(uuid())
-  name  String @unique
+  name  String
   color Color
 
   userId String
@@ -58,7 +58,7 @@ model List {
 
 model Tag {
   id    String @id @default(uuid())
-  name  String @unique
+  name  String
   color Color
 
   userId String
