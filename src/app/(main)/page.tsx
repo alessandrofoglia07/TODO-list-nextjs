@@ -20,7 +20,7 @@ const MainPage = async ({ searchParams }: Props) => {
 
     const getSubtitle = async () => {
         if (searchParams && searchParams.id) {
-            const init = 'Search results for: ';
+            const init = <h4 className='font-semibold'>Search results for: </h4>;
 
             if (searchParams.tag) {
                 const tag = await db.tag.findFirst({
@@ -33,7 +33,6 @@ const MainPage = async ({ searchParams }: Props) => {
 
                 if (!tag) return 'Tag not found';
 
-                // TODO: Fix this
                 return (
                     <>
                         {init} <Tag className='cursor-default' tag={tag} />
@@ -63,7 +62,7 @@ const MainPage = async ({ searchParams }: Props) => {
     return (
         <div className='px-6 py-8'>
             <h1 className='mt-4 text-5xl font-bold'>Todo Wall</h1>
-            <div>{await getSubtitle()}</div>
+            <div className='mt-2 flex flex-col'>{await getSubtitle()}</div>
             <div id='todos' className='flex h-full w-full flex-wrap gap-6 px-8 py-16'>
                 {todos.map((todo) => (
                     <Todo key={todo.id} todo={todo} />
