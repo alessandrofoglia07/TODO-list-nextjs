@@ -8,6 +8,8 @@ import AddTagModal from '@/components/modals/addTagModal';
 import DeleteModal from '@/components/modals/deleteModal';
 import EditModal from '@/components/modals/editModal';
 import { Color } from '@prisma/client';
+import EditTodoModal from '@/components/modals/editTodoModal';
+import { PartialTodo } from '@/components/todo';
 
 export const ModalContext = createContext<ModalContextType | null>(null);
 
@@ -44,6 +46,8 @@ const ModalProvider = ({ children }: PropsWithChildren) => {
                 return <EditModal scope='LIST' name={name} id={id} color={modalData?.color as Color | undefined} />;
             case 'editTag':
                 return <EditModal scope='TAG' name={name} id={id} color={modalData?.color as Color | undefined} />;
+            case 'editTodo':
+                return <EditTodoModal id={(modalData as PartialTodo).id} />;
             default:
                 return <></>;
         }

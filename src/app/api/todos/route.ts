@@ -36,3 +36,40 @@ export const POST = async (req: Request) => {
 
     return NextResponse.json(newTodo);
 };
+
+// TODO: fix this it gives 500 error
+export const PATCH = async (req: Request) => {
+    const data = await req.json();
+
+    const user = await currentProfile();
+
+    if (!user) {
+        return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const val = todoSchema.safeParse(data);
+
+    if (!val.success) {
+        return new NextResponse(val.error.message, { status: 400 });
+    }
+
+    const updatedTodo = await db.todo.update({
+        where: {
+            id: data.id,
+            userId: user.id
+        },
+        data: {
+            title: data.title,
+            content: data.content,
+            color: data.color,
+            tags: {
+                connect: data.tags.map((tag: TagT) => ({ id: tag.id }))
+            },
+            lists: {
+                connect: data.lists.map((list: ListT) => ({ id: list.id }))
+            }
+        }
+    });
+
+    return NextResponse.json(updatedTodo);
+};
