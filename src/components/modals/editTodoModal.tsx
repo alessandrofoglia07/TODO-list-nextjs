@@ -211,7 +211,7 @@ const EditTodoModal = ({ id }: Props) => {
                     />
                     {error && <p className='text-lg font-semibold text-red-600'>{error}</p>}
                     <div className='mt-4 flex items-center justify-between gap-4'>
-                        <div className='relative'>
+                        <div className='relative w-full'>
                             <button onClick={() => setSelecting('list')} className={ListClassName}>
                                 <FaPlus className='h-4 w-4 text-black/80' />
                                 <p className='text-md font-semibold text-black/80'>Add To List</p>
@@ -224,7 +224,7 @@ const EditTodoModal = ({ id }: Props) => {
                                 </div>
                             )}
                             {lists.length > 0 && (
-                                <div className='flex max-h-[20vh] flex-col gap-2 overflow-auto'>
+                                <div className='flex max-h-[20vh] flex-col gap-2 overflow-auto [&>*]:!w-max'>
                                     {lists.map((list) => (
                                         <List button onClick={handleListRemove} key={list.id} list={list} />
                                     ))}
