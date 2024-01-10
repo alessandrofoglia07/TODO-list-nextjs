@@ -37,7 +37,6 @@ export const POST = async (req: Request) => {
     return NextResponse.json(newTodo);
 };
 
-// TODO: fix this it gives 500 error
 export const PATCH = async (req: Request) => {
     const data = await req.json();
 
@@ -61,13 +60,7 @@ export const PATCH = async (req: Request) => {
         data: {
             title: data.title,
             content: data.content,
-            color: data.color,
-            tags: {
-                connect: data.tags.map((tag: TagT) => ({ id: tag.id }))
-            },
-            lists: {
-                connect: data.lists.map((list: ListT) => ({ id: list.id }))
-            }
+            color: data.color
         }
     });
 

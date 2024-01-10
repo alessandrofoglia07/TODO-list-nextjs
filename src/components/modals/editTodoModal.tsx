@@ -108,13 +108,12 @@ const EditTodoModal = ({ id }: Props) => {
         }
     };
 
+    // TODO: Add list and tag confirmation
     const handleConfirm = async () => {
         try {
             const val = todoSchema.safeParse(data);
 
             if (!val.success) return setError(val.error.errors[0].message);
-
-            console.log(data);
 
             await axios.patch('/api/todos', data);
 
