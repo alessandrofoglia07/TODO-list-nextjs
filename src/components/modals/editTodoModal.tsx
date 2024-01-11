@@ -18,23 +18,34 @@ interface Props {
     id: string;
 }
 
+type SelectorListTag<T extends ListT | TagT> = {
+    init: T[];
+    current: T[];
+};
+
 const EditTodoModal = ({ id }: Props) => {
     const router = useRouter();
     const { closeModal } = useContext(ModalContext)!;
     const [data, setData] = useState<Todo | null>(null);
-    const [lists, setLists] = useState<ListT[]>([]);
-    const [tags, setTags] = useState<TagT[]>([]);
+    const [lists, setLists] = useState<SelectorListTag<ListT>>({
+        init: [],
+        current: []
+    });
+    const [tags, setTags] = useState<SelectorListTag<TagT>>({
+        init: [],
+        current: []
+    });
     const [selecting, setSelecting] = useState<'list' | 'tag' | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const fetchLists = async () => {
         const res = await axios.get('/api/lists');
-        setLists(res.data);
+        setLists((prev) => ({ ...prev, current: res.data }));
     };
 
     const fetchTags = async () => {
         const res = await axios.get('/api/tags');
-        setTags(res.data);
+        setTags((prev) => ({ ...prev, current: res.data }));
     };
 
     const fetchTodo = useCallback(async () => {
@@ -117,6 +128,8 @@ const EditTodoModal = ({ id }: Props) => {
 
             await axios.patch('/api/todos', data);
 
+            await handleListTagConfirm();
+
             router.refresh();
 
             closeModal();
@@ -125,12 +138,28 @@ const EditTodoModal = ({ id }: Props) => {
         }
     };
 
+    const handleListTagConfirm = async () => {
+        try {
+            if (!data) return;
+
+            if (JSON.stringify(lists.init) !== JSON.stringify(lists.current)) {
+                await axios.patch(`/api/todos/${data.id}/lists`, lists.current);
+            }
+
+            if (JSON.stringify(tags.init) !== JSON.stringify(tags.current)) {
+                await axios.patch(`/api/todos/${data.id}/tags`, tags.current);
+            }
+        } catch (err) {
+            setError('Something went wrong');
+        }
+    };
+
     const handleListSelect = (list: ListT) => {
         if (!data) return;
 
-        if (lists.find((l) => l.id === list.id)) return;
+        if (lists.current.find((l) => l.id === list.id)) return;
 
-        setLists((prev) => [...prev, list]);
+        setLists((prev) => ({ ...prev, current: [...prev.current, list] }));
 
         handleClose();
     };
@@ -138,15 +167,15 @@ const EditTodoModal = ({ id }: Props) => {
     const handleListRemove = (list: ListT) => {
         if (!data) return;
 
-        setLists((prev) => prev.filter((l) => l.id !== list.id));
+        setLists((prev) => ({ ...prev, current: prev.current.filter((l) => l.id !== list.id) }));
     };
 
     const handleTagSelect = (tag: TagT) => {
         if (!data) return;
 
-        if (tags.find((t) => t.id === tag.id)) return;
+        if (tags.current.find((t) => t.id === tag.id)) return;
 
-        setTags((prev) => [...prev, tag]);
+        setTags((prev) => ({ ...prev, current: [...prev.current, tag] }));
 
         handleClose();
     };
@@ -156,7 +185,7 @@ const EditTodoModal = ({ id }: Props) => {
 
         document.getElementById(`tag-btn-${tag.id}`)?.classList.add('bubble-disappear');
         setTimeout(() => {
-            setTags((prev) => prev.filter((t) => t.id !== tag.id));
+            setTags((prev) => ({ ...prev, current: prev.current.filter((t) => t.id !== tag.id) }));
         }, 200);
     };
 
@@ -218,13 +247,13 @@ const EditTodoModal = ({ id }: Props) => {
                             {selecting === 'list' && (
                                 <div id='list-menu' className='bubble-appear absolute bottom-0 left-0 z-20 mb-12 rounded-3xl bg-slate-50 px-4 py-2'>
                                     <div id='list-menu-content' className='max-w-70vw w-max'>
-                                        <Lists listsAs='button' onClick={handleListSelect} showAllId='see-all-lists-btn' lists={lists} listNumber={5} />
+                                        <Lists listsAs='button' onClick={handleListSelect} showAllId='see-all-lists-btn' lists={lists.current} listNumber={5} />
                                     </div>
                                 </div>
                             )}
-                            {lists.length > 0 && (
+                            {lists.current.length > 0 && (
                                 <div className='flex max-h-[20vh] flex-col gap-2 overflow-auto [&>*]:!w-max'>
-                                    {lists.map((list) => (
+                                    {lists.current.map((list) => (
                                         <List button onClick={handleListRemove} key={list.id} list={list} />
                                     ))}
                                 </div>
@@ -244,15 +273,15 @@ const EditTodoModal = ({ id }: Props) => {
                         {selecting === 'tag' && (
                             <div id='tag-menu' className='bubble-appear absolute bottom-0 left-0 z-20 mb-12 rounded-3xl bg-slate-50 px-4 py-2'>
                                 <div id='tag-menu-content' className='flex w-max flex-col gap-2'>
-                                    {tags.map((tag) => (
+                                    {tags.current.map((tag) => (
                                         <Tag button onClick={handleTagSelect} key={tag.id} tag={tag} />
                                     ))}
                                 </div>
                             </div>
                         )}
-                        {tags.length > 0 && (
+                        {tags.current.length > 0 && (
                             <div className='max-h-[20vh] overflow-y-auto'>
-                                {tags.map((tag) => (
+                                {tags.current.map((tag) => (
                                     <Tag button onClick={handleTagRemove} key={tag.id} tag={tag} />
                                 ))}
                             </div>
