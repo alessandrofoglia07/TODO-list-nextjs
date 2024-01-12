@@ -5,7 +5,27 @@ import { List } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-// TODO: fix this
+export const GET = async (_req: Request, { params }: { params: { id: string } }) => {
+    const { id } = params;
+    const user = await currentProfile();
+
+    if (!user) {
+        return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const lists = await db.list.findMany({
+        where: {
+            todos: {
+                some: {
+                    id
+                }
+            }
+        }
+    });
+
+    return NextResponse.json(lists);
+};
+
 export const PATCH = async (req: Request, { params }: { params: { id: string } }) => {
     const data = await req.json();
     const { id } = params;

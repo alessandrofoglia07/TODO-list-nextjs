@@ -5,7 +5,27 @@ import { Tag } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-// TODO: fix this
+export const GET = async (_req: Request, { params }: { params: { id: string } }) => {
+    const { id } = params;
+    const user = await currentProfile();
+
+    if (!user) {
+        return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const tags = await db.tag.findMany({
+        where: {
+            todos: {
+                some: {
+                    id
+                }
+            }
+        }
+    });
+
+    return NextResponse.json(tags);
+};
+
 export const PATCH = async (req: Request, { params }: { params: { id: string } }) => {
     const data = await req.json();
     const { id } = params;
@@ -23,8 +43,7 @@ export const PATCH = async (req: Request, { params }: { params: { id: string } }
 
     const updatedTodo = await db.todo.update({
         where: {
-            id,
-            userId: user.id
+            id
         },
         include: {
             tags: true

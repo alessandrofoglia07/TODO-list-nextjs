@@ -23,30 +23,31 @@ type SelectorListTag<T extends ListT | TagT> = {
     current: T[];
 };
 
+const defaultSelector = {
+    init: [],
+    current: []
+};
+
 const EditTodoModal = ({ id }: Props) => {
     const router = useRouter();
     const { closeModal } = useContext(ModalContext)!;
     const [data, setData] = useState<Todo | null>(null);
-    const [lists, setLists] = useState<SelectorListTag<ListT>>({
-        init: [],
-        current: []
-    });
-    const [tags, setTags] = useState<SelectorListTag<TagT>>({
-        init: [],
-        current: []
-    });
+    const [lists, setLists] = useState<SelectorListTag<ListT>>(defaultSelector);
+    const [tags, setTags] = useState<SelectorListTag<TagT>>(defaultSelector);
+    const [allLists, setAllLists] = useState<SelectorListTag<ListT>>(defaultSelector);
+    const [allTags, setAllTags] = useState<SelectorListTag<TagT>>(defaultSelector);
     const [selecting, setSelecting] = useState<'list' | 'tag' | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchLists = async () => {
-        const res = await axios.get('/api/lists');
+    const fetchLists = useCallback(async () => {
+        const res = await axios.get(`/api/todos/${id}/lists`);
         setLists((prev) => ({ ...prev, current: res.data }));
-    };
+    }, [id]);
 
-    const fetchTags = async () => {
-        const res = await axios.get('/api/tags');
+    const fetchTags = useCallback(async () => {
+        const res = await axios.get(`/api/todos/${id}/tags`);
         setTags((prev) => ({ ...prev, current: res.data }));
-    };
+    }, [id]);
 
     const fetchTodo = useCallback(async () => {
         const res = await axios.get(`/api/todos/${id}`);
@@ -57,7 +58,34 @@ const EditTodoModal = ({ id }: Props) => {
         fetchTodo();
         fetchLists();
         fetchTags();
-    }, [fetchTodo]);
+    }, [fetchTodo, fetchLists, fetchTags]);
+
+    const fetchAllTags = useCallback(async () => {
+        const res = await axios.get('/api/tags');
+        setAllTags({ init: res.data, current: res.data });
+    }, []);
+
+    const fetchAllLists = useCallback(async () => {
+        const res = await axios.get('/api/lists');
+        setAllLists({ init: res.data, current: res.data });
+    }, []);
+
+    useEffect(() => {
+        fetchAllTags();
+        fetchAllLists();
+    }, [fetchAllTags, fetchAllLists]);
+
+    useEffect(() => {
+        setAllTags((prev) => {
+            return { ...prev, current: prev.init.filter((tag) => !tags.current.find((t) => t.id === tag.id)) };
+        });
+    }, [tags]);
+
+    useEffect(() => {
+        setAllLists((prev) => {
+            return { ...prev, current: prev.init.filter((list) => !lists.current.find((l) => l.id === list.id)) };
+        });
+    }, [lists]);
 
     const handleClose = useCallback(() => {
         if (selecting === 'list') {
@@ -182,11 +210,7 @@ const EditTodoModal = ({ id }: Props) => {
 
     const handleTagRemove = (tag: TagT) => {
         if (!data) return;
-
-        document.getElementById(`tag-btn-${tag.id}`)?.classList.add('bubble-disappear');
-        setTimeout(() => {
-            setTags((prev) => ({ ...prev, current: prev.current.filter((t) => t.id !== tag.id) }));
-        }, 200);
+        setTags((prev) => ({ ...prev, current: prev.current.filter((t) => t.id !== tag.id) }));
     };
 
     const handleColorChange = (color: Color) => {
@@ -247,7 +271,7 @@ const EditTodoModal = ({ id }: Props) => {
                             {selecting === 'list' && (
                                 <div id='list-menu' className='bubble-appear absolute bottom-0 left-0 z-20 mb-12 rounded-3xl bg-slate-50 px-4 py-2'>
                                     <div id='list-menu-content' className='max-w-70vw w-max'>
-                                        <Lists listsAs='button' onClick={handleListSelect} showAllId='see-all-lists-btn' lists={lists.current} listNumber={5} />
+                                        <Lists listsAs='button' onClick={handleListSelect} showAllId='see-all-lists-btn' lists={allLists.current} listNumber={5} />
                                     </div>
                                 </div>
                             )}
@@ -273,7 +297,7 @@ const EditTodoModal = ({ id }: Props) => {
                         {selecting === 'tag' && (
                             <div id='tag-menu' className='bubble-appear absolute bottom-0 left-0 z-20 mb-12 rounded-3xl bg-slate-50 px-4 py-2'>
                                 <div id='tag-menu-content' className='flex w-max flex-col gap-2'>
-                                    {tags.current.map((tag) => (
+                                    {allTags.current.map((tag) => (
                                         <Tag button onClick={handleTagSelect} key={tag.id} tag={tag} />
                                     ))}
                                 </div>
