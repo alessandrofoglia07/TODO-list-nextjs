@@ -15,7 +15,7 @@ interface Props {
     showAllId?: string;
 }
 
-const Lists = ({ lists, modifiable, listNumber, showAllId, listsAs = 'link', onClick }: Props) => {
+const Lists = ({ lists, modifiable, listNumber = DEFAULT_LIST_NUMBER, showAllId, listsAs = 'link', onClick }: Props) => {
     const [seeAll, setSeeAll] = useState(false);
 
     const handleShowAll = () => {
@@ -26,10 +26,10 @@ const Lists = ({ lists, modifiable, listNumber, showAllId, listsAs = 'link', onC
 
     return (
         <>
-            {(seeAll ? lists : lists.slice(0, listNumber || DEFAULT_LIST_NUMBER)).map((list) => (
+            {(seeAll ? lists : lists.slice(0, listNumber)).map((list) => (
                 <List button={listsAs === 'button'} onClick={listsAs === 'button' ? onClick : undefined} modifiable={modifiable} key={list.id} list={list} />
             ))}
-            {!seeAll && lists.length > DEFAULT_LIST_NUMBER && (
+            {!seeAll && lists.length > listNumber && (
                 <button
                     id={showAllId}
                     onClick={handleShowAll}
