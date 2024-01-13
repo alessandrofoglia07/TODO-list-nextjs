@@ -66,7 +66,7 @@ const Navbar = async () => {
                     <h4 className='text-md pb-2 font-extrabold uppercase text-[#686868]'>Tags</h4>
                     <div className='flex h-fit max-h-[25vh] w-full flex-wrap gap-2 overflow-auto'>
                         <NewTagBtn />
-                        <Tags tags={tags} modifiable />
+                        <Tags tags={tags} />
                     </div>
                 </div>
                 <div className='absolute bottom-8 w-full'>

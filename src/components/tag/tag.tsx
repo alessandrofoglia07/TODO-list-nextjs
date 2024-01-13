@@ -12,11 +12,12 @@ interface Props {
     onClick?: (tag: TagT) => void;
     modifiable?: boolean;
     className?: string;
+    alwaysShowButtons?: boolean;
 }
 
 export const TagClassName = 'w-fit rounded-xl max-w-full px-4 py-2 font-bold text-black/80 shadow-hover border-2 border-black/20';
 
-const Tag = ({ tag, button, onClick = (_tag: TagT) => {}, modifiable, className }: Props) => {
+const Tag = ({ tag, button, onClick = (_tag: TagT) => {}, modifiable, className, alwaysShowButtons }: Props) => {
     const [hovering, setHovering] = useState(false);
 
     if (!button) {
@@ -30,7 +31,7 @@ const Tag = ({ tag, button, onClick = (_tag: TagT) => {}, modifiable, className 
                 onMouseLeave={() => setHovering(false)}
                 className={TagClassName + (className ? ' ' + className : '')}
                 style={{ backgroundColor: colors('TAG', tag.color) }}>
-                <Content tag={tag} modifiable={modifiable} hovering={hovering} />
+                <Content tag={tag} modifiable={modifiable} hovering={hovering} alwaysShowButtons={alwaysShowButtons} />
             </Link>
         );
     } else {
@@ -42,7 +43,7 @@ const Tag = ({ tag, button, onClick = (_tag: TagT) => {}, modifiable, className 
                 onClick={() => onClick(tag)}
                 className={TagClassName + (className ? ' ' + className : '')}
                 style={{ backgroundColor: colors('TAG', tag.color) }}>
-                <Content tag={tag} modifiable={modifiable} hovering={hovering} />
+                <Content tag={tag} modifiable={modifiable} hovering={hovering} alwaysShowButtons={alwaysShowButtons} />
             </button>
         );
     }

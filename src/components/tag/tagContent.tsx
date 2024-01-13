@@ -10,12 +10,12 @@ interface Props {
     tag: TagT;
     modifiable?: boolean;
     hovering: boolean;
+    alwaysShowButtons?: boolean;
 }
 
 const ButtonTagClassname = 'w-8 h-8 px-1 rounded-lg text-[#686868] hover:bg-black/10 transition-all';
 
-// TODO: make this look better
-const Content = ({ tag, modifiable, hovering }: Props) => {
+const Content = ({ tag, modifiable, hovering, alwaysShowButtons }: Props) => {
     const { openModal } = useContext(ModalContext)!;
 
     const handleDelete = () => {
@@ -43,7 +43,7 @@ const Content = ({ tag, modifiable, hovering }: Props) => {
             <p className='w-[calc(100%-64px)] min-w-fit break-words'>{tag.name}</p>
             {modifiable && (
                 <div className='z-10 flex w-12 items-center gap-1 pl-1'>
-                    {hovering && (
+                    {(hovering || alwaysShowButtons) && (
                         <>
                             <button
                                 id='little-tag-btn-1'

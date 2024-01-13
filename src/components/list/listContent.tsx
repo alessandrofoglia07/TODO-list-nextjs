@@ -11,11 +11,12 @@ interface Props {
     list: ListT;
     hovering: boolean;
     modifiable?: boolean;
+    alwaysShowButtons?: boolean;
 }
 
 const ButtonListClassname = 'bg-radial-gradient p-1 absolute right-2 rounded-lg text-[#686868] transition-all';
 
-const Content = ({ list, hovering, modifiable }: Props) => {
+const Content = ({ list, hovering, modifiable, alwaysShowButtons }: Props) => {
     const { openModal } = useContext(ModalContext)!;
 
     const handleDelete = () => {
@@ -42,7 +43,7 @@ const Content = ({ list, hovering, modifiable }: Props) => {
         <>
             <div className='mx-1 aspect-square h-4 rounded-md' style={{ backgroundColor: colors('LIST', list.color) }} />
             <p className='text-md w-full break-words font-semibold text-[#686868]'>{list.name}</p>
-            {modifiable && hovering && (
+            {modifiable && (hovering || alwaysShowButtons) && (
                 <>
                     <button
                         id='little-list-btn-1'

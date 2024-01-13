@@ -36,7 +36,7 @@ const MainPage = async ({ searchParams }: Props) => {
 
                 return (
                     <>
-                        {init} <Tag className='cursor-default' tag={tag} />
+                        {init} <Tag className='cursor-default' tag={tag} modifiable alwaysShowButtons />
                     </>
                 );
             } else if (searchParams.list) {
@@ -52,7 +52,7 @@ const MainPage = async ({ searchParams }: Props) => {
 
                 return (
                     <>
-                        {init} <List className='w-max cursor-default' list={list} />
+                        {init} <List className='w-max !pr-24 cursor-default' list={list} modifiable alwaysShowButtons />
                     </>
                 );
             }

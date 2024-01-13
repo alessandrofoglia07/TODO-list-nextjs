@@ -38,7 +38,7 @@ const DeleteModal = ({ scope, name, id }: Props) => {
             console.log(err);
         } finally {
             closeModal();
-            router.refresh();
+            router.push('/');
         }
     };
 
